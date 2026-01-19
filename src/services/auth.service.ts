@@ -49,13 +49,15 @@ export interface ResetPasswordPayload {
     password: string;
     password_confirmation: string;
 }
+
 export const authService = {
     // LOGIN
     login: async (payload: LoginPayload): Promise<AuthResponse> => {
         try {
             console.log("🔵 [Auth Service] Login request:", payload);
 
-            const data = await api.post<AuthResponse>("/auth/login", payload);
+            // [SỬA] Thêm /api vào trước
+            const data = await api.post<AuthResponse>("/api/auth/login", payload);
 
             console.log("🟢 [Auth Service] Login response:", data);
 
@@ -88,7 +90,6 @@ export const authService = {
                     error.response?.data &&
                     typeof error.response.data === "object"
                 ) {
-                    // FIX 1: Thay 'any' bằng interface 'AuthErrorData'
                     const resData = error.response.data as AuthErrorData;
                     errorMessage =
                         resData.message || resData.error || error.message;
@@ -114,8 +115,9 @@ export const authService = {
     // REGISTER
     register: async (payload: RegisterPayload): Promise<AuthResponse> => {
         try {
+            // [SỬA] Thêm /api vào trước
             const data = await api.post<AuthResponse>(
-                "/auth/register",
+                "/api/auth/register",
                 payload,
             );
 
@@ -132,7 +134,6 @@ export const authService = {
 
             let errorMessage = "Đăng ký thất bại";
             if (error instanceof AxiosError) {
-                // FIX 2: Thay 'any' bằng interface 'AuthErrorData'
                 const resData = error.response?.data as AuthErrorData;
                 errorMessage = resData?.message || error.message;
             }
@@ -143,7 +144,8 @@ export const authService = {
     // GET PROFILE
     getProfile: async (): Promise<User> => {
         try {
-            return await api.get<User>("/auth/profile");
+            // [SỬA] Thêm /api vào trước
+            return await api.get<User>("/api/auth/profile");
         } catch (error: unknown) {
             console.error("Get profile error:", error);
             throw error;
@@ -153,7 +155,8 @@ export const authService = {
     // LOGOUT
     logout: async (): Promise<void> => {
         try {
-            await api.post("/auth/logout");
+            // [SỬA] Thêm /api vào trước
+            await api.post("/api/auth/logout");
         } catch (error: unknown) {
             console.error("Logout API error:", error);
         } finally {
@@ -168,7 +171,8 @@ export const authService = {
     // CHECK AUTH
     checkAuth: async (): Promise<{ authenticated: boolean; user?: User }> => {
         try {
-            const user = await api.get<User>("/auth/profile");
+            // [SỬA] Thêm /api vào trước
+            const user = await api.get<User>("/api/auth/profile");
             return {
                 authenticated: true,
                 user: user,
@@ -177,29 +181,33 @@ export const authService = {
             return { authenticated: false };
         }
     },
-    // Thêm vào trong object authService
+    
+    // UPDATE PROFILE
     updateProfile: async (data: { name: string; phone: string }) => {
-        // Gọi API PUT /auth/profile (hoặc endpoint tương ứng của Laravel)
+        // [SỬA] Thêm /api vào trước
         const response = await api.put<{
             status: boolean;
             data: User;
             message: string;
-        }>("/auth/profile", data);
-        return response.data; // Trả về object User mới sau khi update
+        }>("/api/auth/profile", data);
+        return response.data; 
     },
-    // [MỚI] Gửi yêu cầu quên mật khẩu
+
+    // FORGOT PASSWORD
     forgotPassword: async (email: string) => {
+        // [SỬA] Thêm /api vào trước
         const response = await api.post<{ status: boolean; message: string }>(
-            "/auth/forgot-password", 
+            "/api/auth/forgot-password", 
             { email }
         );
         return response;
     },
 
-    // [MỚI] Đặt lại mật khẩu
+    // RESET PASSWORD
     resetPassword: async (payload: ResetPasswordPayload) => {
+        // [SỬA] Thêm /api vào trước
         const response = await api.post<{ status: boolean; message: string }>(
-            "/auth/reset-password", 
+            "/api/auth/reset-password", 
             payload
         );
         return response;
