@@ -6,11 +6,7 @@ const nextConfig: NextConfig = {
     // !! Cảnh báo: Chỉ bật cái này khi cần deploy gấp. Hãy fix lỗi code sau.
     ignoreBuildErrors: true,
   },
-  eslint: {
-    // Bỏ qua lỗi ESLint khi build
-    ignoreDuringBuilds: true,
-  },
-
+ 
   /* --- 2. CẤU HÌNH ẢNH --- */
   images: {
     // unoptimized: true, // Chỉ bật nếu ảnh vẫn lỗi không hiện
