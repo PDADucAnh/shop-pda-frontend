@@ -57,7 +57,7 @@ export const authService = {
             console.log("🔵 [Auth Service] Login request:", payload);
 
             // [SỬA] Thêm /api vào trước
-            const data = await api.post<AuthResponse>("/api/auth/login", payload);
+            const data = await api.post<AuthResponse>("/auth/login", payload);
 
             console.log("🟢 [Auth Service] Login response:", data);
 
@@ -117,7 +117,7 @@ export const authService = {
         try {
             // [SỬA] Thêm /api vào trước
             const data = await api.post<AuthResponse>(
-                "/api/auth/register",
+                "/auth/register",
                 payload,
             );
 
@@ -145,7 +145,7 @@ export const authService = {
     getProfile: async (): Promise<User> => {
         try {
             // [SỬA] Thêm /api vào trước
-            return await api.get<User>("/api/auth/profile");
+            return await api.get<User>("/auth/profile");
         } catch (error: unknown) {
             console.error("Get profile error:", error);
             throw error;
@@ -156,7 +156,7 @@ export const authService = {
     logout: async (): Promise<void> => {
         try {
             // [SỬA] Thêm /api vào trước
-            await api.post("/api/auth/logout");
+            await api.post("/auth/logout");
         } catch (error: unknown) {
             console.error("Logout API error:", error);
         } finally {
@@ -172,7 +172,7 @@ export const authService = {
     checkAuth: async (): Promise<{ authenticated: boolean; user?: User }> => {
         try {
             // [SỬA] Thêm /api vào trước
-            const user = await api.get<User>("/api/auth/profile");
+            const user = await api.get<User>("/auth/profile");
             return {
                 authenticated: true,
                 user: user,
@@ -181,7 +181,7 @@ export const authService = {
             return { authenticated: false };
         }
     },
-    
+
     // UPDATE PROFILE
     updateProfile: async (data: { name: string; phone: string }) => {
         // [SỬA] Thêm /api vào trước
@@ -189,16 +189,16 @@ export const authService = {
             status: boolean;
             data: User;
             message: string;
-        }>("/api/auth/profile", data);
-        return response.data; 
+        }>("/auth/profile", data);
+        return response.data;
     },
 
     // FORGOT PASSWORD
     forgotPassword: async (email: string) => {
         // [SỬA] Thêm /api vào trước
         const response = await api.post<{ status: boolean; message: string }>(
-            "/api/auth/forgot-password", 
-            { email }
+            "/auth/forgot-password",
+            { email },
         );
         return response;
     },
@@ -207,9 +207,9 @@ export const authService = {
     resetPassword: async (payload: ResetPasswordPayload) => {
         // [SỬA] Thêm /api vào trước
         const response = await api.post<{ status: boolean; message: string }>(
-            "/api/auth/reset-password", 
-            payload
+            "/auth/reset-password",
+            payload,
         );
         return response;
-    }
+    },
 };

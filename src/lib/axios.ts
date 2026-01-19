@@ -5,7 +5,7 @@ import axios, {
     InternalAxiosRequestConfig,
     AxiosRequestConfig,
 } from "axios";
-import Cookies from "js-cookie"; // Cần import thư viện này
+import Cookies from "js-cookie";
 
 // Tạo instance axios với baseURL từ .env.local
 const axiosInstance = axios.create({
@@ -17,12 +17,25 @@ const axiosInstance = axios.create({
     timeout: 10000,
 });
 
-// 1. Request Interceptor - GẮN TOKEN VÀO ĐÂY
+// 1. Request Interceptor - QUAN TRỌNG: GẮN TOKEN VÀ TỰ ĐỘNG SỬA URL
 axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        // Lấy token từ Cookie (đã lưu lúc login)
-        const token = Cookies.get("access_token");
+        // --- A. XỬ LÝ URL (FIX LỖI 404/CORS TRIỆT ĐỂ) ---
+        if (config.url && !config.url.startsWith("http")) {
+            // 1. Đảm bảo url bắt đầu bằng dấu /
+            const normalizedUrl = config.url.startsWith("/")
+                ? config.url
+                : `/${config.url}`;
 
+            // 2. Nếu chưa có /api thì thêm vào
+            if (!normalizedUrl.startsWith("/api")) {
+                config.url = `/api${normalizedUrl}`;
+            }
+            // Nếu đã có /api (do bạn sửa thủ công ở auth.service) thì giữ nguyên
+        }
+
+        // --- B. XỬ LÝ TOKEN ---
+        const token = Cookies.get("access_token");
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -42,7 +55,7 @@ axiosInstance.interceptors.response.use(
         if (error.response?.status === 401) {
             Cookies.remove("access_token");
             Cookies.remove("user_info");
-            // window.location.href = '/login'; // Có thể bật lại nếu muốn redirect cứng
+            // window.location.href = '/login';
         }
 
         // Trả về data lỗi từ server thay vì object axios đầy đủ
