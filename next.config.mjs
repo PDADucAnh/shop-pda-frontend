@@ -1,19 +1,16 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* --- 1. CẤU HÌNH ĐỂ VERCEL KHÔNG BỊ LỖI BUILD (QUAN TRỌNG) --- */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // 1. Bỏ qua lỗi TypeScript khi build
   typescript: {
-    // !! Cảnh báo: Chỉ bật cái này khi cần deploy gấp. Hãy fix lỗi code sau.
     ignoreBuildErrors: true,
   },
- 
-  /* --- 2. CẤU HÌNH ẢNH --- */
+  
+  // 2. Cấu hình ảnh
   images: {
-    // unoptimized: true, // Chỉ bật nếu ảnh vẫn lỗi không hiện
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "res.cloudinary.com", // <--- QUAN TRỌNG: Để hiện ảnh từ Backend Railway (Cloudinary)
+        hostname: "res.cloudinary.com",
         port: "",
         pathname: "/**",
       },
@@ -35,7 +32,6 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
-      // Localhost (để test máy local)
       {
         protocol: "http",
         hostname: "localhost",
